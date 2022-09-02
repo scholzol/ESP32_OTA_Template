@@ -10,7 +10,7 @@ In order to use the code provided in this repository you need to provide the cre
 ### Provide your credentials
 
 Create a `credentials.h` file (in the sketch folder directly or in the PlatformIO packages folder).
-For Windows, I stored the file in C:\Users\olaf\.platformio\packages\framework-arduinoespressif32\libraries\WiFi\src.
+For Windows, I stored the file in `C:\Users\[UserName]\.platformio\packages\framework-arduinoespressif32\libraries\WiFi\src`.
 
 The text file `credentials.h` looks like:
 
