@@ -1,13 +1,15 @@
 #include <Arduino.h>
 
+// OTA Header ####################################
 #include <WiFi.h>
 #include <ESPmDNS.h>
 #include <WiFiUdp.h>
 #include <ArduinoOTA.h>
-
 #include <credentials.h>
+// OTA Header ####################################
 
 void setup() {
+// OTA setup ####################################
   Serial.begin(115200);
   Serial.println("Booting");
   WiFi.mode(WIFI_STA);
@@ -62,8 +64,11 @@ void setup() {
   Serial.println("Ready");
   Serial.print("IP address: ");
   Serial.println(WiFi.localIP());
+// OTA setup ####################################
 }
 
 void loop() {
+// OTA loop ####################################
   ArduinoOTA.handle();
+// OTA loop ####################################
 }
