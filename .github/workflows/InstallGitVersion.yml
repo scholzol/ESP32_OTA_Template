@@ -1,4 +1,6 @@
-steps:
+on:
+  workflow_dispatch:
+  steps:
   - name: Install GitVersion
     uses: gittools/actions/gitversion/setup@v0.9.7
     with:
