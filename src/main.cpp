@@ -6,6 +6,8 @@
 #include <WiFiUdp.h>
 #include <ArduinoOTA.h>
 #include <credentials.h>
+#include <Version.h>
+
 // OTA Header ####################################
 
 void setup() {
@@ -64,6 +66,11 @@ void setup() {
   Serial.println("Ready");
   Serial.print("IP address: ");
   Serial.println(WiFi.localIP());
+  Serial.print("Version: ");
+  Serial.println(SemanticVersion);
+  Serial.print("short SHA: ");
+  Serial.println(SHA_short);
+
 // OTA setup ####################################
 }
 
