@@ -92,6 +92,9 @@ void loop() {
 // OTA loop ####################################
   ArduinoOTA.handle();
 // OTA loop ####################################
+
+// initialize WebClient
+
   WiFiClient client = server.available();   // Listen for incoming clients
 
   if (client) {                             // If a new client connects,
