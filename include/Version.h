@@ -1,4 +1,4 @@
-#define SemanticVersion "0.1.2"
+#define SemanticVersion "0.2.0-webserver.1"
 #define MajorVersion (0)
-#define MinorVersion (1)
-#define SHA_short "0d28822"
+#define MinorVersion (2)
+#define SHA_short "58842a6"
