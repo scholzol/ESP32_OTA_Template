@@ -20,11 +20,41 @@ unsigned long currentTime = millis();
 unsigned long previousTime = 0; 
 // Define timeout time in milliseconds (example: 2000ms = 2s)
 const long timeoutTime = 2000;
+char ssidesp32[13];
+uint32_t chipId = 0;
+char str;
+
+esp_chip_info_t chip_info;
 
 void setup() {
 // OTA setup ####################################
   Serial.begin(115200);
   Serial.println("Booting");
+	for(int i=0; i<17; i=i+8) {
+	  chipId |= ((ESP.getEfuseMac() >> (40 - i)) & 0xff) << i;
+	}
+
+  Serial.println("\n\n================================");
+  Serial.printf("Chip Model: %s\n", ESP.getChipModel());
+  Serial.printf("Chip Revision: %d\n", ESP.getChipRevision());
+  Serial.printf("with %d core\n", ESP.getChipCores());
+  Serial.printf("Flash Chip Size : %d \n", ESP.getFlashChipSize());
+  Serial.printf("Flash Chip Speed : %d \n", ESP.getFlashChipSpeed());
+  Serial.printf("ESP32-%06lX\n", chipId);
+  Serial.println(WiFi.macAddress());
+  
+
+  esp_chip_info_t chip_info;
+  esp_chip_info(&chip_info);
+  Serial.printf("\nFeatures included:\n %s\n %s\n %s\n %s\n %s\n",
+      (chip_info.features & CHIP_FEATURE_EMB_FLASH) ? "embedded flash" : "",
+      (chip_info.features & CHIP_FEATURE_WIFI_BGN) ? "2.4GHz WiFi" : "",
+      (chip_info.features & CHIP_FEATURE_BLE) ? "Bluetooth LE" : "",
+      (chip_info.features & CHIP_FEATURE_BT) ? "Bluetooth Classic" : "",
+      (chip_info.features & CHIP_FEATURE_IEEE802154) ? "IEEE 802.15.4" : "");
+  
+  Serial.println();
+
   WiFi.mode(WIFI_STA);
   WiFi.begin(ssid, password);
   while (WiFi.waitForConnectResult() != WL_CONNECTED) {
@@ -140,8 +170,12 @@ void loop() {
             // Display current state, and ON/OFF buttons for GPIO 27  
             client.println("<p>SHA: " + String(SHA_short) + "</p>");
             // If the output27State is off, it displays the ON button       
+            snprintf(ssidesp32,13,"ESP32-%06lX",chipId);
+            // Display current state, and ON/OFF buttons for GPIO 27  
+            client.println("<p>ChipID: " + String(ssidesp32) + "</p>");
+            // If the output27State is off, it displays the ON button       
             client.println("</body></html>");
-            
+
             // The HTTP response ends with another blank line
             client.println();
             // Break out of the while loop
