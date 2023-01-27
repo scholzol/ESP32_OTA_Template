@@ -1,3 +1,4 @@
+// #include section begin -------------------------------------------------------------------------------------------
 #include <Arduino.h>
 
 // OTA Header ####################################
@@ -5,10 +6,14 @@
 #include <ESPmDNS.h>
 #include <WiFiUdp.h>
 #include <ArduinoOTA.h>
-#include <credentials.h>
-#include <Version.h>
-
 // OTA Header ####################################
+
+#include <credentials.h> // Wifi SSID and password
+#include <Version.h> // contains version information
+
+// #include section end ============================================================================================
+
+// define global variables begin -----------------------------------------------------------------------------------
 
 // Set web server port number to 80
 WiFiServer server(80);
@@ -25,14 +30,20 @@ uint32_t chipId = 0;
 char str;
 
 esp_chip_info_t chip_info;
+// define global variables end ======================================================================================
+
+// setup begin ------------------------------------------------------------------------------------------------------
 
 void setup() {
-// OTA setup ####################################
+
+// read ESP chip and Wifi data and print to serial port
+
   Serial.begin(115200);
   Serial.println("Booting");
 	for(int i=0; i<17; i=i+8) {
 	  chipId |= ((ESP.getEfuseMac() >> (40 - i)) & 0xff) << i;
 	}
+  snprintf(ssidesp32,13,"ESP32-%06lX",chipId); // generate chipID string as SSID
 
   Serial.println("\n\n================================");
   Serial.printf("Chip Model: %s\n", ESP.getChipModel());
@@ -41,7 +52,6 @@ void setup() {
   Serial.printf("Flash Chip Size : %d \n", ESP.getFlashChipSize());
   Serial.printf("Flash Chip Speed : %d \n", ESP.getFlashChipSpeed());
   Serial.printf("ESP32-%06lX\n", chipId);
-  Serial.println(WiFi.macAddress());
   
 
   esp_chip_info_t chip_info;
@@ -52,7 +62,6 @@ void setup() {
       (chip_info.features & CHIP_FEATURE_BLE) ? "Bluetooth LE" : "",
       (chip_info.features & CHIP_FEATURE_BT) ? "Bluetooth Classic" : "",
       (chip_info.features & CHIP_FEATURE_IEEE802154) ? "IEEE 802.15.4" : "");
-  
   Serial.println();
 
   WiFi.mode(WIFI_STA);
@@ -62,6 +71,19 @@ void setup() {
     delay(5000);
     ESP.restart();
   }
+  // print Wifi data
+  Serial.print("IP address: ");
+  Serial.println(WiFi.localIP());
+  Serial.print("MAC address: ");
+  Serial.println(WiFi.macAddress());
+
+  // print Firmware data
+  Serial.print("Version: ");
+  Serial.println(SemanticVersion);
+  Serial.print("short SHA: ");
+  Serial.println(SHA_short);
+
+// OTA setup begin ####################################
 
   // Port defaults to 3232
   // ArduinoOTA.setPort(3232);
@@ -104,21 +126,19 @@ void setup() {
     
   ArduinoOTA.begin();
 
-  Serial.println("Ready");
-  Serial.print("IP address: ");
-  Serial.println(WiFi.localIP());
-  Serial.print("Version: ");
-  Serial.println(SemanticVersion);
-  Serial.print("short SHA: ");
-  Serial.println(SHA_short);
 
-// OTA setup ####################################
+// OTA setup end ####################################
 
+  // start the Webserver
   server.begin();
 
 }
+// setup end =============================================================================================
+
+// loop begin --------------------------------------------------------------------------------------------
 
 void loop() {
+
 // OTA loop ####################################
   ArduinoOTA.handle();
 // OTA loop ####################################
@@ -151,30 +171,23 @@ void loop() {
             
             // Display the HTML web page
             client.println("<!DOCTYPE html><html>");
-            client.println("<head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">");
-            client.println("<link rel=\"icon\" href=\"data:,\">");
-            // CSS to style the on/off buttons 
-            // Feel free to change the background-color and font-size attributes to fit your preferences
-            client.println("<style>html { font-family: Helvetica; display: inline-block; margin: 0px auto; text-align: center;}");
-            client.println(".button { background-color: #4CAF50; border: none; color: white; padding: 16px 40px;");
-            client.println("text-decoration: none; font-size: 30px; margin: 2px; cursor: pointer;}");
-            client.println(".button2 {background-color: #555555;}</style></head>");
-            
             // Web Page Heading
-            client.println("<body><h1>ESP32 Web Server</h1>");
-            
-            // Display current state, and ON/OFF buttons for GPIO 26  
+            client.println("<head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">");
+            // Feel free to change style properties to fit your preferences
+            client.println("<style>");
+            client.println("html { font-family: Helvetica; display: inline-block; margin: 0px auto; text-align: center;}");
+            client.println("h1 {background-color: powderblue;}");
+            client.println("</style>");
+            client.println("</head>");
+
+            // Web Page body
+            client.println("<body>");
+            client.println("<h1>Board info</h1>");
             client.println("<p>Semantic Version: " + String(SemanticVersion) + "</p>");
-            // If the output26State is off, it displays the ON button       
-               
-            // Display current state, and ON/OFF buttons for GPIO 27  
-            client.println("<p>SHA: " + String(SHA_short) + "</p>");
-            // If the output27State is off, it displays the ON button       
-            snprintf(ssidesp32,13,"ESP32-%06lX",chipId);
-            // Display current state, and ON/OFF buttons for GPIO 27  
+            client.println("<p>short commit SHA: " + String(SHA_short) + "</p>");
             client.println("<p>ChipID: " + String(ssidesp32) + "</p>");
-            // If the output27State is off, it displays the ON button       
-            client.println("</body></html>");
+            client.println("</body>");
+            client.println("</html>");
 
             // The HTTP response ends with another blank line
             client.println();
@@ -194,3 +207,4 @@ void loop() {
     client.stop();
   }
 }
+// loop end =============================================================================================
