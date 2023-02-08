@@ -1,3 +1,14 @@
+/**
+ * @file main.cpp
+ * @author Olaf Scholz (olaf.scholz@online.de)
+ * @brief 
+ * @version 0.1
+ * @date 2023-02-04
+ * 
+ * @copyright Copyright (c) 2023
+ * 
+ */
+
 // #include section begin -------------------------------------------------------------------------------------------
 #include <Arduino.h>
 
@@ -8,6 +19,7 @@
 #include <credentials.h> // Wifi SSID and password
 #include <Version.h> // contains version information
 
+#include "updateBoardTable.h"
 // #include section end ============================================================================================
 
 // define global variables begin -----------------------------------------------------------------------------------
@@ -27,6 +39,7 @@ uint32_t chipId = 0;
 char str;
 
 esp_chip_info_t chip_info;
+
 // define global variables end ======================================================================================
 
 // setup begin ------------------------------------------------------------------------------------------------------
@@ -88,7 +101,8 @@ void setup() {
 
   // start the Webserver
   server.begin();
-
+  // insert or update the board table for the ESP32 bords in the MySQL database
+  updateBoardTable(ssidesp32);
 }
 // setup end =============================================================================================
 
