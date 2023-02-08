@@ -1,3 +1,14 @@
+/**
+ * @file OTA.h
+ * @author Olaf Scholz (olaf.scholz@online.de)
+ * @brief 
+ * @version 0.1
+ * @date 2023-02-04
+ * 
+ * @copyright Copyright (c) 2023
+ * 
+ */
+
 #ifdef ESP32
 #include <WiFi.h>
 #include <ESPmDNS.h>
@@ -17,6 +28,14 @@ void ota_handle( void * parameter ) {
   }
 }
 #endif
+
+/**
+ * @brief 
+ * 
+ * @param nameprefix 
+ * @param ssid 
+ * @param password 
+ */
 
 void setupOTA(const char* nameprefix, const char* ssid, const char* password) {
   // Configure the hostname
