@@ -11,13 +11,14 @@ $semver = $gitVersion.semver
 # $minorVersion = $gitVersion.Minor
 # $patchVersion = $gitVersion.Patch
 $shaShort = $gitVersion.ShortSha
+$workingDir = Split-Path -Path $pwd -Leaf
 
 Set-Content -Path $OutputFile "#define SemanticVersion ""$semver"""
 # Add-Content -Path $OutputFile "#define MajorVersion ($majorVersion)"
 # Add-Content -Path $OutputFile "#define MinorVersion ($minorVersion)"
 # Add-Content -Path $OutputFile "#define PatchVersion ($patchVersion)"
 Add-Content -Path $OutputFile "#define SHA_short ""$shaShort"""
-Add-Content -Path $OutputFile "#define WorkingDirectory ""$pwd"""
+Add-Content -Path $OutputFile "#define WorkingDirectory ""$workingDir"""
 Write-Debug "wrote semantic version: $semver"
 Write-Host "-DSEMANTIC_VERSION=$semver"
 Pop-Location

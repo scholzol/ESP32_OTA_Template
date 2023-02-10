@@ -27,7 +27,27 @@ uint32_t chipId = 0;
 char str;
 
 esp_chip_info_t chip_info;
+
+const char* ntpServer = "pool.ntp.org";
+const long  gmtOffset_sec = 3600;
+const int   daylightOffset_sec = 3600;
+
 // define global variables end ======================================================================================
+
+// helper functions begin --------------------------------------------------------------------------------------
+
+void printLocalTime(){
+  struct tm timeinfo;
+  if(!getLocalTime(&timeinfo)){
+    Serial.println("Failed to obtain time");
+    return;
+  }
+  Serial.println(&timeinfo, "%A, %B %d %Y %H:%M:%S");
+  Serial.println();
+}
+
+// helper functions end ========================================================================================
+
 
 // setup begin ------------------------------------------------------------------------------------------------------
 
@@ -68,6 +88,9 @@ void setup() {
     delay(5000);
     ESP.restart();
   }
+  configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);
+  printLocalTime();
+
   // print Wifi data
   Serial.print("IP address: ");
   Serial.println(WiFi.localIP());
@@ -142,6 +165,7 @@ void loop() {
             client.println("<h1>Board info</h1>");
             client.println("<p>Semantic Version: " + String(SemanticVersion) + "</p>");
             client.println("<p>short commit SHA: " + String(SHA_short) + "</p>");
+            client.println("<p>working directory: " + String(WorkingDirectory) + "</p>");
             client.println("<p>ChipID: " + String(ssidesp32) + "</p>");
             client.println("</body>");
             client.println("</html>");
