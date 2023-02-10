@@ -1,5 +1,3 @@
-#define SemanticVersion "0.1.14"
-#define MajorVersion (0)
-#define MinorVersion (1)
-#define PatchVersion (14)
-#define SHA_short "36e467b"
+#define SemanticVersion "0.1.18-MySQL.3"
+#define SHA_short "dfc2fbf"
+#define WorkingDirectory "C:\Users\olaf\Documents\PlatformIO\Projects\ESP32_OTA_Template"
