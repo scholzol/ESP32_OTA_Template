@@ -38,7 +38,8 @@ print(cwd)
 r = git.repo.Repo(cwd)
 print(r)
 # GITVERSION = r.git.describe("--tag")
-GITVERSION = os.system("powershell -NonInteractive -NoLogo -NoProfile -File .\GetVersion.ps1 -ProjectDirectory . -OutputFile .\include\Version.h")
+if is_pio_build:
+    GITVERSION = os.system("powershell -NonInteractive -NoLogo -NoProfile -File .\GetVersion.ps1 -ProjectDirectory . -OutputFile .\include\Version.h")
 print(GITVERSION)
     
 
