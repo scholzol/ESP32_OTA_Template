@@ -19,6 +19,11 @@ except ImportError:
     env.Execute("$PYTHONEXE -m pip install GitPython")
     import git
 """
+def is_pio_build():
+    from SCons.Script import DefaultEnvironment
+    env = DefaultEnvironment()
+    if "IsCleanTarget" in dir(env) and env.IsCleanTarget(): return False
+    return not env.IsIntegrationDump()
 
 BUILDNR = int(round(time.time()))
 VERSION_FILE = "version.h"
