@@ -19,17 +19,10 @@ except ImportError:
     env.Execute("$PYTHONEXE -m pip install GitPython")
     import git
 """
-def is_pio_build():
-    from SCons.Script import DefaultEnvironment
-    env = DefaultEnvironment()
-    if "IsCleanTarget" in dir(env) and env.IsCleanTarget(): return False
-    return not env.IsIntegrationDump()
-
 BUILDNR = int(round(time.time()))
 VERSION_FILE = "version.h"
 CONFIG_FILE = "config.h"
 BUILD_DIR = "build/"
-GITVERSION = ""
 BOARD = env['BOARD']
 API_URL = ""
 FILENAME = ""
@@ -38,16 +31,16 @@ print(cwd)
 r = git.repo.Repo(cwd)
 print(r)
 # GITVERSION = r.git.describe("--tag")
-if is_pio_build:
-    GITVERSION = os.system("powershell -NonInteractive -NoLogo -NoProfile -File .\GetVersion.ps1 -ProjectDirectory . -OutputFile .\include\Version.h")
-print(GITVERSION)
+#if is_pio_build:
+#    GITVERSION = os.system("powershell -NonInteractive -NoLogo -NoProfile -File .\GetVersion.ps1 -ProjectDirectory . -OutputFile .\include\Version.h")
+#print(GITVERSION)
     
-
+os.system("powershell -NonInteractive -NoLogo -NoProfile -File .\GetVersion.ps1 -ProjectDirectory . -OutputFile .\include\Version.h")
 mydb = mysql.connector.connect(
-  host="192.168.178.49",
-  user="olaf",
-  password="10o10s60",
-  database="esp32"
+host="192.168.178.49",
+user="olaf",
+password="10o10s60",
+database="esp32"
 )
 
 mycursor = mydb.cursor()
@@ -60,3 +53,6 @@ mydb.commit()
 
 print(mycursor.rowcount, "record inserted.")
 
+#env.AddPreAction("$PROGPATH", before_build)
+#env.AddPreAction("$BUILD_DIR/src/main.cpp", before_build)
+#env.AddPreAction("buildprog", before_build)
