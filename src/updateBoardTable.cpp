@@ -1,4 +1,13 @@
-#include "updateBoardTable.h"
+/**
+ * @file updateBoardTable.cpp
+ * @author Olaf Scholz (olaf.scholz@online.de)
+ * @brief 
+ * @version 0.1
+ * @date 2023-03-08
+ * 
+ * @copyright Copyright (c) 2023
+ * 
+ */
 #include <MySQL_Generic.h>
 #include <MySQL_credentials.h>
 #include <algorithm>
@@ -30,7 +39,7 @@ void updateBoardTable(char ssid32[13])
     String SELECT_SQL = String("SELECT ChipID FROM ") + default_database + "." + default_table;
     String INSERT_SQL = String("INSERT INTO ") + default_database + "." + default_table  + " (ChipModel, MAC_Address, IP_Address, ChipID) VALUES ('" + String(ESP.getChipModel()) + "','" + String(WiFi.macAddress()) + "','" + WiFi.localIP().toString() + "','" + ssid32 + "')";
     String UPDATE_SQL = String("UPDATE ") + default_database + "." + default_table  + " SET ChipModel='" + String(ESP.getChipModel()) + "', MAC_Address='" + String(WiFi.macAddress()) + "', IP_Address='" + WiFi.localIP().toString() + "' WHERE ChipID='" + ssid32 + "'";
-    String rowValues[]= {""};
+    String rowValues[20]= {" "};
 
       MySQL_Query query_mem = MySQL_Query(&conn);
 
@@ -67,6 +76,7 @@ void updateBoardTable(char ssid32[13])
             
             // Read the rows and print them
             row_values *row = NULL;
+            int i = 1;
             do
             {
                 row = query_mem.get_next_row();
@@ -76,7 +86,7 @@ void updateBoardTable(char ssid32[13])
                 for (int f = 0; f < cols->num_fields; f++)
                 {
                     MYSQL_DISPLAY0(row->values[f]);
-                    rowValues[f] = row->values[f];
+                    rowValues[i] = row->values[f];
                     if (f < cols->num_fields - 1)
                     {
                     MYSQL_DISPLAY0(", ");
@@ -84,6 +94,7 @@ void updateBoardTable(char ssid32[13])
                 }
                 
                 MYSQL_DISPLAY();
+                i++;
                 }
             } while (row != NULL);
         }
