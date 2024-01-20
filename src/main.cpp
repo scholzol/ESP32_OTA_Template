@@ -26,6 +26,7 @@
 
 // define global variables begin -----------------------------------------------------------------------------------
 
+char mySSID[64];
 // Set web server port number to 80
 WiFiServer server(80);
 // Variable to store the HTTP request
@@ -182,6 +183,54 @@ void updateBoardTable(char ssid32[13])
     }
 }
 
+void handleWiFi() {
+  WiFi.mode(WIFI_STA);
+  // WiFi.scanNetworks will return the number of networks found
+  int n = WiFi.scanNetworks();
+  Serial.println("scan done");
+  if (n == 0) {
+      Serial.println("no networks found");
+  } else {
+    Serial.print(n);
+    Serial.println(" networks found");
+    for (int i = 0; i < n; ++i) {
+      // Print SSID and RSSI for each network found
+      Serial.print(i + 1);
+      Serial.print(": ");
+      Serial.print(WiFi.SSID(i));
+      Serial.print(" (");
+      Serial.print(WiFi.RSSI(i));
+      Serial.print(")");
+      Serial.println((WiFi.encryptionType(i) == WIFI_AUTH_OPEN)?" ":"*");
+      delay(10);
+    }
+    strcpy(mySSID, WiFi.SSID(0).c_str());
+    mySSID[strlen(mySSID)] = '\0';
+  }
+  Serial.println(mySSID);
+
+  // Wait a bit before scanning again
+  delay(5000);
+
+  WiFi.begin(mySSID, password);
+  Serial.println();
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+  Serial.println();
+  if (WiFi.status() == WL_CONNECTED) {
+    Serial.println("erfolgreich verbunden");
+    Serial.println();
+    Serial.print("Connected to ");
+    Serial.println(mySSID);
+    Serial.print("IP address: ");
+    Serial.println(WiFi.localIP());
+  }
+  server.begin();
+  Serial.println("HTTP server started");
+}
+
 void WebClient() {
 // initialize WebClient
   WiFiClient client = server.available();   // Listen for incoming clients
@@ -282,13 +331,8 @@ void setup() {
       (chip_info.features & CHIP_FEATURE_IEEE802154) ? "IEEE 802.15.4" : "");
   Serial.println();
 
-  WiFi.mode(WIFI_STA);
-  WiFi.begin(ssid, password);
-  while (WiFi.waitForConnectResult() != WL_CONNECTED) {
-    Serial.println("Connection Failed! Rebooting...");
-    delay(5000);
-    ESP.restart();
-  }
+  handleWiFi();
+
   configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);
   printLocalTime();
 
