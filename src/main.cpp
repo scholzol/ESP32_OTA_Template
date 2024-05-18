@@ -226,6 +226,7 @@ void WebClient() {
             client.println("<p>short commit SHA: " + String(SHA_short) + "</p>");
             client.println("<p>working directory: " + String(WorkingDirectory) + "</p>");
             client.println("<p>ChipID: " + String(ssidesp32) + "</p>");
+            client.println("<p>connected to: " + WiFi.SSID() + "</p>");
             client.println("</body>");
             client.println("</html>");
 
