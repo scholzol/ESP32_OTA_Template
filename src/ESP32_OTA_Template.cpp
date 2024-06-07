@@ -14,35 +14,26 @@
 #include <SPIFFS.h>
 #include <FS.h>
 
-// OTA Header ####################################
 #include "OTA.h"
-// OTA Header ####################################
 
 #include "Version.h" // contains version information
 #include "MySQL_1.h"
 #include <StartServer.h>
-// #include <algorithm>
 
 // #include section end ============================================================================================
 
 // define global variables begin -----------------------------------------------------------------------------------
 
-// char mySSID[64];
-// Variable to store the HTTP request
-// String header;
-// Current time
 unsigned long currentTime = millis();
 // Previous time
 unsigned long previousTime = 0; 
 // Define timeout time in milliseconds (example: 2000ms = 2s)
 const long timeoutTime = 2000;
 char ssidesp32[13];
-// char str;
+
 const char* ntpServer = "pool.ntp.org";
 const long  gmtOffset_sec = 3600;
 const int   daylightOffset_sec = 3600;
-
-// time_t timer;
 
 // define global variables end ======================================================================================
 
@@ -110,9 +101,8 @@ void setup() {
   configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);
   printLocalTime();
 
-  getChipInfo(); // read and print Chip, Wifi and Firmware data to Serial, has to be placed after setupOTA()
-
-
+  // read and print Chip, Wifi and Firmware data to Serial, has to be placed after setupOTA()
+  getChipInfo(); 
 
   // start the Webserver
   startServer();
@@ -126,10 +116,6 @@ void setup() {
 
 void loop() {
 
-// OTA loop ####################################
   ArduinoOTA.handle();
-// OTA loop ####################################
-//  WebClient();
-
 }
 // loop end =============================================================================================
